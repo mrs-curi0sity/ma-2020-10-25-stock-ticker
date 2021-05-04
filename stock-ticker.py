@@ -9,7 +9,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import pandas_datareader.data as web
 from datetime import datetime
-
+from pathlib import Path
 
 # When this is set to true, all stock will be scaled to 100% on first day 
 SCALE_TO_100 = True
@@ -18,16 +18,17 @@ def scale_to_100(some_series):
     return some_series / some_series[0]
 
 # read in names and ids of nasdaq listed stock
-nsdq = pd.read_csv('../Data/NASDAQcompanylist.csv') #   DAX_listed_companies  NASDAQcompanylist.csv
+nsdq = pd.read_csv(Path('./data') / 'All_listed_companies.csv') #   DAX_listed_companies  NASDAQcompanylist.csv
 nsdq.set_index('Symbol', inplace = True)
 
 
 # create static list of options that are selectable
 options = []
+NAME_MAX_LEN = 16
 
 for tic in nsdq.index:
     mydict = {}
-    mydict['label'] = nsdq.loc[tic]['Name'] + ' ' + tic
+    mydict['label'] = nsdq.loc[tic]['Name'][:NAME_MAX_LEN] + ' ' + tic
     mydict['value'] = tic
     options.append(mydict)
 
@@ -47,7 +48,7 @@ app.layout = html.Div([
             multi = True
         # use inline-block such that elements are aligned next to each other without having to define columns
         )
-    ], style = {'display':'inline-block', 'verticalAlign':'top', 'widht': '30%'}),
+    ], style = {'display':'inline-block', 'verticalAlign':'top', 'widht': '50%'}),
     
     # date picker
     html.Div([
